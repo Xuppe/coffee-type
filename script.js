@@ -3,7 +3,7 @@ const wordsContainer = document.querySelector('.words-container');
 const wordsInput = document.querySelector('.words-input');
 const wordsDisplay = document.querySelector('.words-display');
 
-const wordList = 'hello how are you im good what about you yes very great nice to see because limited time against clock';
+const wordList = "Hello how 21 - Sam - Yes are you i'm good what about you yes very great nice to see because limited time against clock";
 
 let started = false;
 let finished = false;
@@ -84,37 +84,14 @@ wordsInput.onfocus = function() {
 
 
 // keystroke checking
-wordsInput.onkeydown = function(e) {
+wordsInput.oninput = function(e) {
+  console.log(wordsInput.value);
   // letter input checking
-  if (e.code.slice(3).toLowerCase() === wordsArray[wordCounter][letterCounter].innerText) {
-    wordsArray[wordCounter][letterCounter].classList.add('correct');
-    wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
-    wordsArray[wordCounter][letterCounter].classList.remove('caret');
-    correctLetters++;
-    letterCounter++;
-  } else if (e.code.includes('Key') && e.code.slice(3).toLowerCase !== wordsArray[wordCounter][letterCounter].innerText) {
-    // checking if incorrect or extra letter
-    if (letterCounter !== wordsArray[wordCounter].length - 1){
-      wordsArray[wordCounter][letterCounter].classList.add('incorrect');
-      wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
-      wordsArray[wordCounter][letterCounter].classList.remove('caret');
-      incorrectLetters++;
-      letterCounter++;
-    } else if (wordsArray[wordCounter].length < 20) {
-      // insert extra word
-      let extraLetter = document.createElement('span');
-      extraLetter.innerText = e.code.slice(3).toLowerCase();
-      extraLetter.classList.add('extra-letter');
-      wordsDisplay
-      wordsArray[wordCounter][letterCounter].parentNode.insertBefore(extraLetter, wordsArray[wordCounter][letterCounter]);
-      wordsArray[wordCounter].splice(letterCounter, 0, extraLetter);
-      // count extra
-      letterCounter++;
-    }
-  }
-  // space input
-  // check if the user has entered at least one letter in the current word
-  if (e.code === 'Space' && letterCounter > 0) {
+  // set the current letter as the letter that the user has just typed
+  let currentLetter = e.data;
+  // console.log(currentLetter); // Debugging keystroke
+  // space input, checking if the user has entered at least one letter in the current word
+  if (currentLetter === ' ' && letterCounter > 0) {
     // move caret to the next word and set letter selector back to zero
     wordsArray[wordCounter][letterCounter].classList.remove('caret');
     wordCounter++;
@@ -128,7 +105,38 @@ wordsInput.onkeydown = function(e) {
         }
       }
     }
+    // clear input box
+    wordsInput.value = '';
+  } else if (currentLetter === wordsArray[wordCounter][letterCounter].innerText && currentLetter !== ' ' && currentLetter !== null) {
+    // checking if correct letter has been entered, if so, move caret forward and style test accordingly
+    wordsArray[wordCounter][letterCounter].classList.add('correct');
+    wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
+    wordsArray[wordCounter][letterCounter].classList.remove('caret');
+    correctLetters++;
+    letterCounter++;
+  } else if (currentLetter !== wordsArray[wordCounter][letterCounter].innerText && currentLetter !== ' ' && currentLetter !== null) {
+    // checking if incorrect or extra letter
+    if (letterCounter !== wordsArray[wordCounter].length - 1){
+      wordsArray[wordCounter][letterCounter].classList.add('incorrect');
+      wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
+      wordsArray[wordCounter][letterCounter].classList.remove('caret');
+      incorrectLetters++;
+      letterCounter++;
+    } else if (wordsArray[wordCounter].length < 20) {
+      // insert extra word
+      let extraLetter = document.createElement('span');
+      extraLetter.innerText = currentLetter;
+      extraLetter.classList.add('extra-letter');
+      wordsDisplay
+      wordsArray[wordCounter][letterCounter].parentNode.insertBefore(extraLetter, wordsArray[wordCounter][letterCounter]);
+      wordsArray[wordCounter].splice(letterCounter, 0, extraLetter);
+      // count extra
+      letterCounter++;
+    }
   }
+}
+
+wordsInput.onkeydown = function(e) {
   // backspace input
   if (e.code === 'Backspace') {
     if (letterCounter != 0) {
@@ -149,25 +157,30 @@ wordsInput.onkeydown = function(e) {
         }
       }
     } else {
+      // return to the previous word if it contains incorrect lettering, or added letters
+      // prevent default behaviour of backspacing the inputbox after adding the previous word in,
+      // otherwise there would always be a letter at the end missing
+      e.preventDefault();
       // check if there are any errors in the previous word, if so, backspace to the appropriate letter
       for (let i = 0; i < wordsArray[wordCounter - 1].length - 1; i++) {
         // check if any letters are incorrect
         if (!wordsArray[wordCounter - 1][i].classList.contains('correct')) {
           let rollbackLetter;
-          for (let j = wordsArray[wordCounter - 1].length - 1; j >= 0 ; j--) {
+          for (let j = 0; j < wordsArray[wordCounter - 1].length - 1 ; j++) {
             wordsArray[wordCounter - 1][j].classList.remove('incorrect-word');
             // checking what the closent entered letter in the last word was, and setting that as the rollback destination
-            if ((wordsArray[wordCounter - 1][j].classList.contains('correct') ||
+            if (wordsArray[wordCounter - 1][j].classList.contains('correct') ||
             wordsArray[wordCounter - 1][j].classList.contains('incorrect') ||
-            wordsArray[wordCounter - 1][j].classList.contains('extra-letter')) &&
-            rollbackLetter === undefined) {
+            wordsArray[wordCounter - 1][j].classList.contains('extra-letter')) {
               rollbackLetter = j;
+              wordsInput.value += wordsArray[wordCounter - 1][j].innerText;
             }
           }
           wordsArray[wordCounter][letterCounter].classList.remove('caret');
           wordCounter--;
           if (rollbackLetter === undefined) {
             letterCounter = 0;
+            wordsInput.value = '';
           } else {
             letterCounter = rollbackLetter + 1;
           }
