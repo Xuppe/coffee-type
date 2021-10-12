@@ -1,0 +1,70 @@
+/* - - - - - basic setup - - - - - */
+html {
+  font-family: 'Courier';
+  font-weight: bold;
+  background-color: #1c1c1c;
+  color: white;
+}
+
+header {
+  margin: 5rem 0;
+  text-align: center;
+}
+
+/* - - - - - words container setup - - - - - */
+
+.words-container {
+  font-size: 1.5em;
+  color: gray;
+  max-width: 30em;
+  margin: 0 auto;
+}
+
+.words-display {
+  line-height: 1.5em;
+}
+
+.words-input {
+  opacity: 0;
+  cursor: default;
+}
+
+/* - - - - - caret styling and animation - - - - - */
+
+.caret {
+  border-width: 0;
+  border-bottom-width: 0.2rem;
+  border-style: solid;
+  animation-duration: 0.5s;
+  animation-name: blink;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes blink {
+  from {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  to {
+    border-color: rgba(255, 255, 255, 1.0);
+  }
+}
+
+/* - - - - - letter and word styling - - - - - */
+
+.correct {
+  color: white;
+}
+
+.incorrect {
+  color: coral;
+}
+
+.extra-letter {
+  color: #8f4f38;
+}
+
+.incorrect-word {
+  border-bottom: coral 0.2rem solid;
+}
