@@ -55,8 +55,9 @@ function wpmCalc(startTime, endTime, wordsArray) {
 
   let time = endTime - startTime;
   time = time / 1000 / 60;
-  let grossWPM = ((totalCharacters - extraLetters) / 5) / time;
-  return `🎉 WPM: ${grossWPM.toFixed(0)}`;
+  let grossWPM = ((totalCharacters) / 5) / time;
+  let adjustedWPM = grossWPM - ((incorrectLetters + missedLetters + extraLetters)/time);
+  return `🎉 WPM: ${adjustedWPM.toFixed(0)}`;
 }
 
 
