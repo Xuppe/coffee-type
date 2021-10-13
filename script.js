@@ -3,7 +3,7 @@ const wordsContainer = document.querySelector('.words-container');
 const wordsInput = document.querySelector('.words-input');
 const wordsDisplay = document.querySelector('.words-display');
 
-const wordList = "Hello how 21 - Sam - Yes are you i'm good what about you yes very great nice to see because limited time against clock";
+const wordList = "Hello how Yes are you i'm good what about you yes very great nice to see because limited time against clock";
 
 let started = false;
 let finished = false;
@@ -85,7 +85,6 @@ wordsInput.onfocus = function() {
 
 // keystroke checking
 wordsInput.oninput = function(e) {
-  console.log(wordsInput.value);
   // letter input checking
   // set the current letter as the letter that the user has just typed
   let currentLetter = e.data;
@@ -132,6 +131,9 @@ wordsInput.oninput = function(e) {
       wordsArray[wordCounter].splice(letterCounter, 0, extraLetter);
       // count extra
       letterCounter++;
+    } else {
+      // if too many extra letters have been added already, don't add anymore, and remove further extras from input box
+      wordsInput.value = wordsInput.value.slice(0, 19);
     }
   }
 }
@@ -140,14 +142,16 @@ wordsInput.onkeydown = function(e) {
   // backspace input
   if (e.code === 'Backspace') {
     if (letterCounter != 0) {
-      // remove styling or remove extra letter
+      // remove styling from incorrect letter, or remove extra letter
       if (!wordsArray[wordCounter][letterCounter - 1].classList.contains('extra-letter')) {
         wordsArray[wordCounter][letterCounter - 1].classList.remove('correct');
         wordsArray[wordCounter][letterCounter - 1].classList.remove('incorrect');
+        wordsArray[wordCounter][letterCounter - 1].removeAttribute('typed-letter');
         wordsArray[wordCounter][letterCounter].classList.remove('caret');
         letterCounter--;
         wordsArray[wordCounter][letterCounter].classList.add('caret');
       } else {
+        // if letter is an extra added to the end of the word, remove it
         if (wordsArray[wordCounter][letterCounter - 1].classList.contains('extra-letter')) {
           // remove extra letter
           wordsArray[wordCounter][letterCounter - 1].remove();
