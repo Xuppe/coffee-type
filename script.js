@@ -3,13 +3,14 @@ const wordsInput = document.querySelector('.words-input');
 const wordsDisplay = document.querySelector('.words-display');
 const resetButton = document.querySelector('.reset-button');
 const scoreContainer = document.querySelector('.score-container');
+const header = document.querySelector('header');
 
-const wordList = "Hello how Yes are you i'm good what about you yes very great nice to see because limited time against clock";
+const wordList = "hello how yes are you good what about you yes very great nice to see because limited time against clock";
 
 let started = false;
 let finished = false;
 
-let words = 15;
+let words = 25;
 let wordsArray;
 let letterCounter;
 let wordCounter;
@@ -26,6 +27,16 @@ let missedLetters;
 function random(min, max) {
   const num = Math.floor(Math.random() * (max - min + 1)) + min;
   return num;
+}
+
+function dimToggle(toggle) {
+  if (toggle === true) {
+    header.style.opacity = '0.1';
+    resetButton.style.opacity = '0.1';
+  } else if (toggle === false) {
+    header.style.opacity = '1.0';
+    resetButton.style.opacity = '1.0';
+  }
 }
 
 function wpmCalc(startTime, endTime, wordsArray) {
@@ -128,6 +139,7 @@ wordsInput.onfocus = function() {
 window.onkeydown = function(e) {
   if (e.code === "Tab") {
     e.preventDefault();
+    dimToggle(false);
     resetButton.focus();
   }
 }
@@ -136,11 +148,18 @@ window.onkeydown = function(e) {
 resetButton.onclick = function() {
   // reset focus to the input box and call the setup function
   wordsInput.focus();
+  dimToggle(false);
   setup();
+}
+
+document.onmousemove = function() {
+  dimToggle(false);
 }
 
 // keystroke checking
 wordsInput.oninput = function(e) {
+  // dim header and controls when typing
+  dimToggle(true);
   // check if the test is running, if not, record the time the user starts typing
   if (!started) {
     started = true;
@@ -162,6 +181,7 @@ wordsInput.oninput = function(e) {
       finished = true;
       endTime = Date.now();
       scoreContainer.firstElementChild.innerText = wpmCalc(startTime, endTime, wordsArray);
+      dimToggle(false);
       scoreContainer.classList.add('score-visible');
       return;
     }
@@ -188,6 +208,7 @@ wordsInput.oninput = function(e) {
       finished = true;
       endTime = Date.now();
       scoreContainer.firstElementChild.innerText = wpmCalc(startTime, endTime, wordsArray);
+      dimToggle(false);
       scoreContainer.classList.add('score-visible');
       return;
     }

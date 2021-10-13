@@ -9,6 +9,17 @@ html {
 header {
   margin: 5rem 0;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* - - - - - header stylng - - - - - */
+
+
+.logo {
+  margin-left: 2em;
+  height: 4em;
 }
 
 /* - - - - - words container setup - - - - - */
@@ -109,4 +120,10 @@ header {
 .reset-button:active {
   background-color: #191919;
   border: 2px solid #191919;
+}
+
+/* - - - - - dim setup styling - - - - - */
+
+header, .reset-button {
+  transition: all 0.2s ease;
 }
