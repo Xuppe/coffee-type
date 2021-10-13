@@ -118,6 +118,7 @@ wordsInput.oninput = function(e) {
     // checking if incorrect or extra letter
     if (letterCounter !== wordsArray[wordCounter].length - 1){
       wordsArray[wordCounter][letterCounter].classList.add('incorrect');
+      wordsArray[wordCounter][letterCounter].setAttribute('typed-letter', currentLetter);
       wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
       wordsArray[wordCounter][letterCounter].classList.remove('caret');
       incorrectLetters++;
@@ -127,7 +128,6 @@ wordsInput.oninput = function(e) {
       let extraLetter = document.createElement('span');
       extraLetter.innerText = currentLetter;
       extraLetter.classList.add('extra-letter');
-      wordsDisplay
       wordsArray[wordCounter][letterCounter].parentNode.insertBefore(extraLetter, wordsArray[wordCounter][letterCounter]);
       wordsArray[wordCounter].splice(letterCounter, 0, extraLetter);
       // count extra
@@ -173,9 +173,15 @@ wordsInput.onkeydown = function(e) {
             wordsArray[wordCounter - 1][j].classList.contains('incorrect') ||
             wordsArray[wordCounter - 1][j].classList.contains('extra-letter')) {
               rollbackLetter = j;
-              wordsInput.value += wordsArray[wordCounter - 1][j].innerText;
+              // if the previous words letters were typed incorreclty, at the original wrongly typed characters back into the input
+              if(wordsArray[wordCounter - 1][j].hasAttribute('typed-letter')) {
+                wordsInput.value += wordsArray[wordCounter - 1][j].getAttribute('typed-letter');
+              } else {
+                wordsInput.value += wordsArray[wordCounter - 1][j].innerText;
+              }
             }
           }
+          // set caret to the correct rollback position
           wordsArray[wordCounter][letterCounter].classList.remove('caret');
           wordCounter--;
           if (rollbackLetter === undefined) {
