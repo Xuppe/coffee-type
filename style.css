@@ -19,7 +19,7 @@ header {
 
 .logo {
   margin-left: 2em;
-  height: 4em;
+  height: 3em;
 }
 
 /* - - - - - words container setup - - - - - */
@@ -50,7 +50,6 @@ header {
   margin: 3rem auto;
   transition: opacity ease 0.2s;
   opacity: 0;
-  height: 2em;
 }
 
 .score-visible {

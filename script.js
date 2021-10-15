@@ -4,13 +4,18 @@ const wordsDisplay = document.querySelector('.words-display');
 const resetButton = document.querySelector('.reset-button');
 const scoreContainer = document.querySelector('.score-container');
 const header = document.querySelector('header');
+const personalBest = document.querySelector('.personal-best')
 
-const wordList = "hello how yes are you good what about you yes very great nice to see because limited time against clock";
+const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
+const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
+
+// word selection variables
+let words = 5;
+let wordList = wordSet2;
 
 let started = false;
 let finished = false;
 
-let words = 25;
 let wordsArray;
 let letterCounter;
 let wordCounter;
@@ -64,11 +69,27 @@ function wpmCalc(startTime, endTime, wordsArray) {
   totalCharacters -= 1;
   missedLetters = totalCharacters - (correctLetters + incorrectLetters + extraLetters);
 
+  // calculate words per minute
   let time = endTime - startTime;
   time = time / 1000 / 60;
   let grossWPM = ((totalCharacters) / 5) / time;
   let adjustedWPM = grossWPM - ((incorrectLetters + missedLetters + extraLetters)/time);
-  return `🎉 WPM: ${adjustedWPM.toFixed(0)}`;
+
+  // check against WPM score against stored personal best
+  if (!localStorage.getItem('pb')) {
+    localStorage.setItem('pb', adjustedWPM);
+  } else {
+    let pb = localStorage.getItem('pb');
+    if (pb < adjustedWPM) {
+      localStorage.setItem('pb', adjustedWPM);
+      personalBest.innerText = "🎉 New Personal Best";
+    } else {
+      personalBest.innerText = "Personal best WPM: " + Number(pb).toFixed(0);
+    }
+  }
+
+  // return score
+  return `⏲ WPM: ${adjustedWPM.toFixed(0)}`;
 }
 
 
@@ -158,8 +179,6 @@ document.onmousemove = function() {
 
 // keystroke checking
 wordsInput.oninput = function(e) {
-  // dim header and controls when typing
-  dimToggle(true);
   // check if the test is running, if not, record the time the user starts typing
   if (!started) {
     started = true;
@@ -168,6 +187,9 @@ wordsInput.oninput = function(e) {
   // if the game has stopped, return
   if (finished){
     return;
+  } else {
+    // dim header and controls when typing
+    dimToggle(true);
   }
   // letter input checking
   // set the current letter as the letter that the user has just typed
