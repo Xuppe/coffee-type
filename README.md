@@ -1,2 +1,3 @@
-# together-type
+# coffee-type
+
 A cooperative typing experience

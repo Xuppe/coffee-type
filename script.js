@@ -1,23 +1,25 @@
-// setup variables
+// - - - - - - - - - - - - variables setup - - - - - - - - - - - -
+
+// dom references
 const wordsInput = document.querySelector('.words-input');
 const wordsDisplay = document.querySelector('.words-display');
 const resetButton = document.querySelector('.reset-button');
 const scoreContainer = document.querySelector('.score-container');
 const header = document.querySelector('header');
 const personalBest = document.querySelector('.personal-best')
-
 const caret = document.querySelector('.caret-element');
 
+// word selection variables
 const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
 const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
 
-// word selection variables
 let words = 25;
 let wordList = wordSet1;
 
 let started = false;
 let finished = false;
 
+// application variables
 let wordsArray;
 let letterCounter;
 let wordCounter;
@@ -30,13 +32,18 @@ let extraLetters;
 let missedLetters;
 
 
+// - - - - - - - - - - - - functions setup - - - - - - - - - - - -
 
+//  return random number function
+// - - - - - - - - - - - -
 function random(min, max) {
   const num = Math.floor(Math.random() * (max - min + 1)) + min;
   return num;
 }
 
-function dimToggle(toggle) {
+// interface dimming function
+// - - - - - - - - - - - -
+function dimInterface(toggle) {
   if (toggle === true) {
     header.style.opacity = '0.1';
     resetButton.style.opacity = '0.1';
@@ -46,6 +53,34 @@ function dimToggle(toggle) {
   }
 }
 
+// update caret function
+// - - - - - - - - - - - -
+function updateCaret() {
+  if (!document.querySelector('.caret')) {
+    caret.style.opacity = '0';
+  } else {
+    let caretElementReference = document.querySelector('.caret');
+    let elementPos = caretElementReference.getBoundingClientRect();
+    caret.style.height = elementPos.height + 'px';
+    caret.style.width = elementPos.width + 'px';
+    caret.style.left = elementPos.left + 'px';
+    caret.style.top = elementPos.top + 'px';
+    caret.style.opacity = '1';
+  }
+}
+
+// finish test function
+// - - - - - - - - - - - -
+function finishTest() {
+  finished = true;
+  endTime = Date.now();
+  scoreContainer.firstElementChild.innerText = wpmCalc(startTime, endTime, wordsArray);
+  dimInterface(false);
+  scoreContainer.classList.add('score-visible');
+}
+
+// calculate and return words per minute function
+// - - - - - - - - - - - -
 function wpmCalc(startTime, endTime, wordsArray) {
   let totalCharacters = 0;
   let correctLetters = 0;
@@ -65,6 +100,7 @@ function wpmCalc(startTime, endTime, wordsArray) {
       }
     }
   }
+
   // add spaces to correct letters count
   // adjust total letters count for disregared end space
   correctLetters += words - 1;
@@ -89,13 +125,12 @@ function wpmCalc(startTime, endTime, wordsArray) {
       personalBest.innerText = "Personal best WPM: " + Number(pb).toFixed(0);
     }
   }
-
-  // return score
   return `⏲ WPM: ${adjustedWPM.toFixed(0)}`;
 }
 
 
-// setup typing function
+// - - - - - - - - - - - - main program setup function - - - - - - - - - - - -
+
 function setup() {
 
   // reset variables
@@ -131,6 +166,7 @@ function setup() {
       word.appendChild(letter);
       letters.push(letter);
     }
+
     // add spacing span at the end of every word
     let spacing = document.createElement('span');
     spacing.innerText = ' ';
@@ -145,29 +181,13 @@ function setup() {
   updateCaret();
 }
 
-// first time setup
-setup();
 
-// move carret to new posision based on reference element with caret class
-// if there is no element with the caret class, than hide the caret element
-function updateCaret() {
-  if (!document.querySelector('.caret')) {
-    caret.style.opacity = '0';
-  } else {
-    let caretElementReference = document.querySelector('.caret');
-    let elementPos = caretElementReference.getBoundingClientRect();
-    caret.style.height = elementPos.height + 'px';
-    caret.style.width = elementPos.width + 'px';
-    caret.style.left = elementPos.left + 'px';
-    caret.style.top = elementPos.top + 'px';
-    caret.style.opacity = '1';
-  }
-}
+// - - - - - - - - - - - - input event responses setup - - - - - - - - - - - -
 
 // reposition caret when window is resized
 window.onresize = updateCaret;
 
-// words input focus
+// words input on focus
 wordsDisplay.onclick = function() {
   wordsInput.focus();
 }
@@ -186,7 +206,7 @@ wordsInput.onfocus = function() {
 window.onkeydown = function(e) {
   if (e.code === "Tab") {
     e.preventDefault();
-    dimToggle(false);
+    dimInterface(false);
     resetButton.focus();
   }
 }
@@ -195,28 +215,30 @@ window.onkeydown = function(e) {
 resetButton.onclick = function() {
   // reset focus to the input box and call the setup function
   wordsInput.focus();
-  dimToggle(false);
+  dimInterface(false);
   setup();
 }
 
 // when moving the mouse, toggle the dimming effect
 document.onmousemove = function() {
-  dimToggle(false);
+  dimInterface(false);
 }
 
-// keystroke checking
+
+// - - - - - - - - - - - - main application input checking - - - - - - - - - - - -
+
 wordsInput.oninput = function(e) {
   // check if the test is running, if not, record the time the user starts typing
   if (!started) {
     started = true;
     startTime = Date.now();
   }
-  // if the game has stopped, return
+  // if the test has finished, return
   if (finished){
     return;
   } else {
-    // dim header and controls when typing
-    dimToggle(true);
+    // dim user interface
+    dimInterface(true);
   }
   // letter input checking
   // set the current letter as the letter that the user has just typed
@@ -227,11 +249,7 @@ wordsInput.oninput = function(e) {
     wordsArray[wordCounter][letterCounter].classList.remove('caret');
     // end the test if the current word is the last one
     if (wordCounter === wordsArray.length - 1) {
-      finished = true;
-      endTime = Date.now();
-      scoreContainer.firstElementChild.innerText = wpmCalc(startTime, endTime, wordsArray);
-      dimToggle(false);
-      scoreContainer.classList.add('score-visible');
+      finishTest();
       return;
     }
     // otherwise contiunue and move caret to the next word and check previous for errors
@@ -256,11 +274,7 @@ wordsInput.oninput = function(e) {
     updateCaret();
     // end the test if the current letter is corrent and the last letter of the last word
     if (letterCounter === wordsArray[wordCounter].length - 2 && wordCounter === wordsArray.length - 1) {
-      finished = true;
-      endTime = Date.now();
-      scoreContainer.firstElementChild.innerText = wpmCalc(startTime, endTime, wordsArray);
-      dimToggle(false);
-      scoreContainer.classList.add('score-visible');
+      finishTest();
       return;
     }
     // otherwise contiunue and move caret forward and increment letterCounter;
@@ -277,7 +291,7 @@ wordsInput.oninput = function(e) {
       updateCaret();
       letterCounter++;
     } else if (wordsArray[wordCounter].length < 20) {
-      // insert extra word
+      // insert extra letter
       let extraLetter = document.createElement('span');
       extraLetter.innerText = currentLetter;
       extraLetter.classList.add('extra-letter');
@@ -305,9 +319,9 @@ wordsInput.onkeydown = function(e) {
         wordsArray[wordCounter][letterCounter - 1].classList.remove('correct');
         wordsArray[wordCounter][letterCounter - 1].classList.remove('incorrect');
         wordsArray[wordCounter][letterCounter - 1].removeAttribute('typed-letter');
+        wordsArray[wordCounter][letterCounter - 1].classList.add('caret');
         wordsArray[wordCounter][letterCounter].classList.remove('caret');
         letterCounter--;
-        wordsArray[wordCounter][letterCounter].classList.add('caret');
         updateCaret();
       } else {
         // if letter is an extra added to the end of the word, remove it
@@ -315,8 +329,8 @@ wordsInput.onkeydown = function(e) {
           // remove extra letter and decrement the letters counter
           wordsArray[wordCounter][letterCounter - 1].remove();
           wordsArray[wordCounter].splice(letterCounter - 1, 1);
-          updateCaret();
           letterCounter--;
+          updateCaret();
         }
       }
     } else if (wordCounter !== 0) {
@@ -361,3 +375,8 @@ wordsInput.onkeydown = function(e) {
     }
   }
 }
+
+
+// - - - - - - - - - - - - call setup to initialise program - - - - - - - - - - - -
+
+setup();
