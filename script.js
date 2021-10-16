@@ -6,12 +6,14 @@ const scoreContainer = document.querySelector('.score-container');
 const header = document.querySelector('header');
 const personalBest = document.querySelector('.personal-best')
 
+const caret = document.querySelector('.caret-element');
+
 const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
 const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
 
 // word selection variables
-let words = 5;
-let wordList = wordSet2;
+let words = 25;
+let wordList = wordSet1;
 
 let started = false;
 let finished = false;
@@ -28,7 +30,7 @@ let extraLetters;
 let missedLetters;
 
 
-// utility functions
+
 function random(min, max) {
   const num = Math.floor(Math.random() * (max - min + 1)) + min;
   return num;
@@ -138,10 +140,32 @@ function setup() {
     wordsDisplay.appendChild(word);
   }
   wordsArray[0][0].classList.add('caret');
+
+  // update caret position and display
+  updateCaret();
 }
 
 // first time setup
 setup();
+
+// move carret to new posision based on reference element with caret class
+// if there is no element with the caret class, than hide the caret element
+function updateCaret() {
+  if (!document.querySelector('.caret')) {
+    caret.style.opacity = '0';
+  } else {
+    let caretElementReference = document.querySelector('.caret');
+    let elementPos = caretElementReference.getBoundingClientRect();
+    caret.style.height = elementPos.height + 'px';
+    caret.style.width = elementPos.width + 'px';
+    caret.style.left = elementPos.left + 'px';
+    caret.style.top = elementPos.top + 'px';
+    caret.style.opacity = '1';
+  }
+}
+
+// reposition caret when window is resized
+window.onresize = updateCaret;
 
 // words input focus
 wordsDisplay.onclick = function() {
@@ -149,10 +173,12 @@ wordsDisplay.onclick = function() {
 }
 wordsInput.onblur = function() {
   wordsArray[wordCounter][letterCounter].classList.remove('caret');
+  updateCaret();
 }
 wordsInput.onfocus = function() {
   if (!finished){
     wordsArray[wordCounter][letterCounter].classList.add('caret');
+    updateCaret();
   }
 }
 
@@ -173,6 +199,7 @@ resetButton.onclick = function() {
   setup();
 }
 
+// when moving the mouse, toggle the dimming effect
 document.onmousemove = function() {
   dimToggle(false);
 }
@@ -211,6 +238,7 @@ wordsInput.oninput = function(e) {
     wordCounter++;
     letterCounter = 0;
     wordsArray[wordCounter][letterCounter].classList.add('caret');
+    updateCaret();
     // check if previous word has incorrect or missing letters, if so, add appropirate class
     for (let i = 0; i < wordsArray[wordCounter - 1].length - 1; i++) {
       if (!wordsArray[wordCounter - 1][i].classList.contains('correct')) {
@@ -225,6 +253,7 @@ wordsInput.oninput = function(e) {
     // checking if correct letter has been entered, if so, move caret forward and style test accordingly, and check if it was the last character, ending the test
     wordsArray[wordCounter][letterCounter].classList.add('correct');
     wordsArray[wordCounter][letterCounter].classList.remove('caret');
+    updateCaret();
     // end the test if the current letter is corrent and the last letter of the last word
     if (letterCounter === wordsArray[wordCounter].length - 2 && wordCounter === wordsArray.length - 1) {
       finished = true;
@@ -236,6 +265,7 @@ wordsInput.oninput = function(e) {
     }
     // otherwise contiunue and move caret forward and increment letterCounter;
     wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
+    updateCaret();
     letterCounter++;
   } else if (currentLetter !== wordsArray[wordCounter][letterCounter].innerText && currentLetter !== ' ' && currentLetter !== null) {
     // checking if incorrect or extra letter
@@ -244,6 +274,7 @@ wordsInput.oninput = function(e) {
       wordsArray[wordCounter][letterCounter].setAttribute('typed-letter', currentLetter);
       wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
       wordsArray[wordCounter][letterCounter].classList.remove('caret');
+      updateCaret();
       letterCounter++;
     } else if (wordsArray[wordCounter].length < 20) {
       // insert extra word
@@ -252,6 +283,7 @@ wordsInput.oninput = function(e) {
       extraLetter.classList.add('extra-letter');
       wordsArray[wordCounter][letterCounter].parentNode.insertBefore(extraLetter, wordsArray[wordCounter][letterCounter]);
       wordsArray[wordCounter].splice(letterCounter, 0, extraLetter);
+      updateCaret();
       letterCounter++;
     } else {
       // if too many extra letters have been added already, don't add anymore, and remove further extras from input box
@@ -276,12 +308,14 @@ wordsInput.onkeydown = function(e) {
         wordsArray[wordCounter][letterCounter].classList.remove('caret');
         letterCounter--;
         wordsArray[wordCounter][letterCounter].classList.add('caret');
+        updateCaret();
       } else {
         // if letter is an extra added to the end of the word, remove it
         if (wordsArray[wordCounter][letterCounter - 1].classList.contains('extra-letter')) {
           // remove extra letter and decrement the letters counter
           wordsArray[wordCounter][letterCounter - 1].remove();
           wordsArray[wordCounter].splice(letterCounter - 1, 1);
+          updateCaret();
           letterCounter--;
         }
       }
@@ -320,6 +354,7 @@ wordsInput.onkeydown = function(e) {
             letterCounter = rollbackLetter + 1;
           }
           wordsArray[wordCounter][letterCounter].classList.add('caret');
+          updateCaret();
           return;
         }
       }
