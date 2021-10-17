@@ -9,6 +9,7 @@ const header = document.querySelector('header');
 const personalBest = document.querySelector('.personal-best')
 const caret = document.querySelector('.caret-element');
 
+
 // word selection variables
 const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
 const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
@@ -47,9 +48,11 @@ function dimInterface(toggle) {
   if (toggle === true) {
     header.style.opacity = '0.1';
     resetButton.style.opacity = '0.1';
+    document.body.style.cursor = 'none';
   } else if (toggle === false) {
     header.style.opacity = '1.0';
     resetButton.style.opacity = '1.0';
+    document.body.style.cursor = 'auto';
   }
 }
 
