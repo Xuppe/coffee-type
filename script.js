@@ -48,11 +48,11 @@ function dimInterface(toggle) {
   if (toggle === true) {
     header.style.opacity = '0.1';
     resetButton.style.opacity = '0.1';
-    document.body.style.cursor = 'none';
+    document.documentElement.style.cursor = 'none';
   } else if (toggle === false) {
     header.style.opacity = '1.0';
     resetButton.style.opacity = '1.0';
-    document.body.style.cursor = 'auto';
+    document.documentElement.style.cursor = 'auto';
   }
 }
 
@@ -142,6 +142,8 @@ function setup() {
 
   started = false;
   finished = false;
+
+  dimInterface(false);
 
   scoreContainer.classList.remove('score-visible');
 
