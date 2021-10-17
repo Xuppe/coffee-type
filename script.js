@@ -9,12 +9,15 @@ const header = document.querySelector('header');
 const personalBest = document.querySelector('.personal-best')
 const caret = document.querySelector('.caret-element');
 
+let totalLetters;
+let progressBars = [];
+
 
 // word selection variables
 const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
 const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
 
-let words = 25;
+let words = 15;
 let wordList = wordSet1;
 
 let started = false;
@@ -70,6 +73,41 @@ function updateCaret() {
     caret.style.top = elementPos.top + 'px';
     caret.style.opacity = '1';
   }
+}
+
+// create progress bars function
+// - - - - - - - - - - - -
+function createProgressBars() {
+  let barsContainer = document.querySelector('.progress-bars-container');
+  let newBar = document.createElement('div');
+  newBar.classList.add('progress-bar');
+  barsContainer.appendChild(newBar);
+  progressBars.push(newBar);
+}
+
+// update progress bars function
+// - - - - - - - - - - - -
+function updateProgressBars() {
+  let correctLetters = 0;
+  for (let i = 0; i < wordsArray.length; i++) {
+    for (let j = 0; j < wordsArray[i].length; j++) {
+      if ((wordsArray[i][j].classList.contains('correct')
+      || wordsArray[i][j].classList.contains('incorrect-word')
+      || wordsArray[i][j].classList.contains('correct-space')
+      || wordsArray[i][j].classList.contains('incorrect'))
+      && !wordsArray[i][j].classList.contains('extra-letter')) {
+        correctLetters++;
+      }
+    }
+  }
+  let currentProgress = (((correctLetters / totalLetters) * 100) + 1).toFixed(2);
+  progressBars[0].style.width = currentProgress + '%';
+}
+
+// reset progress bars function
+// - - - - - - - - - - - -
+function resetProgressBars() {
+  progressBars[0].style.width = 0 + '%';
 }
 
 // finish test function
@@ -139,7 +177,7 @@ function setup() {
   wordsArray = [];
   letterCounter = 0;
   wordCounter = 0;
-
+  totalLetters = 0;
   started = false;
   finished = false;
 
@@ -165,6 +203,7 @@ function setup() {
       letter.innerText = splitWords[randomSelector][j];
       word.appendChild(letter);
       letters.push(letter);
+      totalLetters++;
     }
 
     // add spacing span at the end of every word
@@ -174,10 +213,16 @@ function setup() {
     letters.push(spacing);
     wordsArray.push(letters);
     wordsDisplay.appendChild(word);
+    totalLetters++;
   }
   wordsArray[0][0].classList.add('caret');
 
-  // update caret position and display
+  // update caret position and display progress bars
+  if (progressBars[0]) {
+    resetProgressBars();
+  } else {
+    createProgressBars();
+  }
   updateCaret();
 }
 
@@ -232,6 +277,8 @@ wordsInput.oninput = function(e) {
   if (!started) {
     started = true;
     startTime = Date.now();
+    // change the progress bar colour when a new test is started
+    progressBars[0].style.backgroundColor = `hsl(${random(0, 360)}, 63%, 51%)`;
   }
   // if the test has finished, return
   if (finished){
@@ -259,6 +306,7 @@ wordsInput.oninput = function(e) {
         wordsArray[wordCounter][wordsArray[wordCounter].length - 1].classList.remove('correct-space');
       }
     }
+    updateProgressBars();
     // end the test if the current word is the last one
     if (wordCounter === wordsArray.length - 1) {
       finishTest();
@@ -276,6 +324,7 @@ wordsInput.oninput = function(e) {
     wordsArray[wordCounter][letterCounter].classList.add('correct');
     wordsArray[wordCounter][letterCounter].classList.remove('caret');
     updateCaret();
+    updateProgressBars();
     // end the test if the current letter is corrent and the last letter of the last word
     if (letterCounter === wordsArray[wordCounter].length - 2 && wordCounter === wordsArray.length - 1) {
       finishTest();
@@ -292,6 +341,7 @@ wordsInput.oninput = function(e) {
       wordsArray[wordCounter][letterCounter].setAttribute('typed-letter', currentLetter);
       wordsArray[wordCounter][letterCounter + 1].classList.add('caret');
       wordsArray[wordCounter][letterCounter].classList.remove('caret');
+      updateProgressBars();
       updateCaret();
       letterCounter++;
     } else if (wordsArray[wordCounter].length < 20) {
@@ -327,6 +377,7 @@ wordsInput.onkeydown = function(e) {
         wordsArray[wordCounter][letterCounter].classList.remove('caret');
         letterCounter--;
         updateCaret();
+        updateProgressBars();
       } else {
         // if letter is an extra added to the end of the word, remove it
         if (wordsArray[wordCounter][letterCounter - 1].classList.contains('extra-letter')) {
@@ -335,6 +386,7 @@ wordsInput.onkeydown = function(e) {
           wordsArray[wordCounter].splice(letterCounter - 1, 1);
           letterCounter--;
           updateCaret();
+          updateProgressBars();
         }
       }
     } else if (wordCounter !== 0) {
@@ -373,6 +425,7 @@ wordsInput.onkeydown = function(e) {
           }
           wordsArray[wordCounter][letterCounter].classList.add('caret');
           updateCaret();
+          updateProgressBars();
           return;
         }
       }
