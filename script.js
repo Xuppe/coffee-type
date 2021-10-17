@@ -79,10 +79,26 @@ function finishTest() {
   scoreContainer.classList.add('score-visible');
 }
 
+// update locally stored person best
+// - - - - - - - - - - - -
+function updatePersonalBest(wpm) {
+  // check against WPM score against stored personal best
+  if (!localStorage.getItem('pb')) {
+    localStorage.setItem('pb', wpm);
+  } else {
+    let pb = localStorage.getItem('pb');
+    if (pb < wpm) {
+      localStorage.setItem('pb', wpm);
+      personalBest.innerText = "🎉 New Personal Best";
+    } else {
+      personalBest.innerText = "Personal best WPM: " + Number(pb).toFixed(0);
+    }
+  }
+}
+
 // calculate and return words per minute function
 // - - - - - - - - - - - -
 function wpmCalc(startTime, endTime, wordsArray) {
-  let totalCharacters = 0;
   let correctLetters = 0;
   let incorrectLetters = 0;
   let extraLetters = 0;
@@ -90,41 +106,24 @@ function wpmCalc(startTime, endTime, wordsArray) {
 
   for (let i = 0; i < wordsArray.length; i++) {
     for (let j = 0; j < wordsArray[i].length; j++) {
-      totalCharacters++;
-      if (wordsArray[i][j].classList.contains('correct')) {
+      if ((wordsArray[i][j].classList.contains('correct') || wordsArray[i][j].classList.contains('correct-space'))
+      && !wordsArray[i][j].classList.contains('incorrect-word')) {
         correctLetters++;
       } else if (wordsArray[i][j].classList.contains('incorrect')) {
         incorrectLetters++;
       } else if (wordsArray[i][j].classList.contains('extra-letter')) {
         extraLetters++;
+      } else if (wordsArray[i][j].classList.contains('incorrect-word') && !wordsArray[i][j].classList.contains('correct') && !wordsArray[i][j].classList.contains('incorrect-letter')) {
+        missedLetters++;
       }
     }
   }
 
-  // add spaces to correct letters count
-  // adjust total letters count for disregared end space
-  correctLetters += words - 1;
-  totalCharacters -= 1;
-  missedLetters = totalCharacters - (correctLetters + incorrectLetters + extraLetters);
-
   // calculate words per minute
-  let time = endTime - startTime;
-  time = time / 1000 / 60;
-  let grossWPM = ((totalCharacters) / 5) / time;
-  let adjustedWPM = grossWPM - ((incorrectLetters + missedLetters + extraLetters)/time);
-
-  // check against WPM score against stored personal best
-  if (!localStorage.getItem('pb')) {
-    localStorage.setItem('pb', adjustedWPM);
-  } else {
-    let pb = localStorage.getItem('pb');
-    if (pb < adjustedWPM) {
-      localStorage.setItem('pb', adjustedWPM);
-      personalBest.innerText = "🎉 New Personal Best";
-    } else {
-      personalBest.innerText = "Personal best WPM: " + Number(pb).toFixed(0);
-    }
-  }
+  let time = (endTime - startTime) / 1000 / 60;
+  let grossWPM = (correctLetters / 5) / time;
+  let adjustedWPM = grossWPM - ((incorrectLetters + extraLetters + missedLetters) / time);
+  updatePersonalBest(adjustedWPM);
   return `⏲ WPM: ${adjustedWPM.toFixed(0)}`;
 }
 
@@ -135,10 +134,6 @@ function setup() {
 
   // reset variables
   wordsArray = [];
-  correctLetters = 0;
-  incorrectLetters = 0;
-  extraLetters = 0;
-  missedLetters = 0;
   letterCounter = 0;
   wordCounter = 0;
 
@@ -247,25 +242,29 @@ wordsInput.oninput = function(e) {
   if (currentLetter === ' ' && letterCounter > 0) {
     // move caret to the next word and set letter selector back to zero, if the word is the last one, end the game
     wordsArray[wordCounter][letterCounter].classList.remove('caret');
+    if (letterCounter === wordsArray[wordCounter].length - 1) {
+      wordsArray[wordCounter][letterCounter].classList.add('correct-space');
+    }
+    // check if word has incorrect or missing letters, if so, add appropirate class
+    for (let i = 0; i < wordsArray[wordCounter].length - 1; i++) {
+      if (!wordsArray[wordCounter][i].classList.contains('correct')) {
+        for (let j = 0; j < wordsArray[wordCounter].length - 1; j++) {
+          wordsArray[wordCounter][j].classList.add('incorrect-word');
+        }
+        wordsArray[wordCounter][wordsArray[wordCounter].length - 1].classList.remove('correct-space');
+      }
+    }
     // end the test if the current word is the last one
     if (wordCounter === wordsArray.length - 1) {
       finishTest();
       return;
     }
-    // otherwise contiunue and move caret to the next word and check previous for errors
+    // otherwise contiunue and iterate selector values
     wordCounter++;
     letterCounter = 0;
+    // update caret position and clear input box
     wordsArray[wordCounter][letterCounter].classList.add('caret');
     updateCaret();
-    // check if previous word has incorrect or missing letters, if so, add appropirate class
-    for (let i = 0; i < wordsArray[wordCounter - 1].length - 1; i++) {
-      if (!wordsArray[wordCounter - 1][i].classList.contains('correct')) {
-        for (let j = 0; j < wordsArray[wordCounter - 1].length - 1; j++) {
-          wordsArray[wordCounter - 1][j].classList.add('incorrect-word');
-        }
-      }
-    }
-    // clear input box
     wordsInput.value = '';
   } else if (currentLetter === wordsArray[wordCounter][letterCounter].innerText && currentLetter !== ' ' && currentLetter !== null) {
     // checking if correct letter has been entered, if so, move caret forward and style test accordingly, and check if it was the last character, ending the test
