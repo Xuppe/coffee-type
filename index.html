@@ -5,9 +5,9 @@
     <title>Coffee Type</title>
     <meta charset='utf-8'>
     <meta name='Author' content='David'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <link rel='icon' href='coffeetype-icon.png' type='image/icon-x'>
     <link rel='stylesheet' href='style.css' type='text/css'>
-    <link rel='stylesheet' href='style-colour-themes.css' type='text/css'>
     <script src='script.js' defer></script>
   </head>
 
@@ -18,11 +18,23 @@
         <!-- <img class='logo' src='coffeetype-logo.png' alt='a dripping coffee mug in the shape of a C and a T'> -->
       </div>
       <div class='options-container'>
-        <button class='colour-button'>theme</button>
+        <ul>
+          <li><button class='buttonSingle'>solo</button></li>
+          <li><button class='buttonMulti'>multiplayer</button></li>
+        </ul>
+        <ul>
+          <li><button class='buttonQuote'>quote</button></li>
+          <li><button class='buttonRandom'>random</button></li>
+        </ul>
+        <ul>
+          <li><button class='button15'>15</button></li>
+          <li><button class='button25'>25</button></li>
+          <li><button class='button50'>50</button></li>
+        </ul>
       </div>
     </header>
 
-    <div class='words-container'>
+    <section class='words-container'>
       <input class='words-input' autofocus autocomplete="off" autocorrect="off" autocapitalize="off">
       <p class='words-display'></p>
       <div class='caret-element'></div>
@@ -30,24 +42,25 @@
       <div class='progress-bars-container'>
         <!-- progress bars will be added here with JavaScript -->
       </div>
-    </div>
+    </section>
 
-    <div class='score-container'>
+    <section class='score-container'>
       <p>user score</p>
       <p class='personal-best'></p>
-    </div>
+    </section>
+
     <button class='reset-button'>Reset</button>
 
-    <div class='colour-selection-container'>
-      <div class='colour-buttons-container'>
-        <button class='colour-button b-classic'>Classic</button>
-        <button class='colour-button b-mango'>Mango</button>
-        <button class='colour-button b-milkshake'>Milkshake</button>
-        <button class='colour-button b-banana'>Banana</button>
-        <button class='colour-button b-mochi'>Mochi</button>
+    <footer>
+      <div class='footer-content'>
+        <div class='options-container'>
+          <ul>
+            <li><button>colour theme</button><li>
+          </ul>
+        </div>
+        <p>A cooperative typing experience inspired by Miodec's Monkey Type</p>
       </div>
-    </div>
-
+    </footer>
   </body>
 
 </html>

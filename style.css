@@ -1,10 +1,15 @@
 /* - - - - - css varialbes setup - - - - - */
 
 :root {
+  --max-width: 960px;
+
   --incorrect-letter-colour: hsl(0, 0%, 30%);
   --extra-letter-colour: hsl(0, 0%, 30%);
   --incorrect-word-colour: hsl(0, 0%, 51%);
+
   --progress-colour: hsl(0, 0%, 51%);
+  --progress-background-colour: #333333;
+
   --background-colour: hsl(0, 0%, 11%);
 }
 
@@ -16,43 +21,54 @@ html {
   color: white;
 }
 
+button {
+  font-family: 'Courier';
+  font-weight: bold;
+}
+
+/* - - - - - header setup - - - - - */
+
 header {
-  margin: 5rem auto;
-  text-align: center;
+  margin: 2rem auto;
+  padding: 0 2rem;
   display: flex;
-  max-width: 760px;
+  max-width: var(--max-width);
   justify-content: space-between;
+  transition: opacity: ease 0.2s;
 }
 
 .logo-container {
   display: flex;
-  align-items: center;
-}
-
-.options-container {
-  display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 h1 {
-  color: var(--incorrect-letter-colour);
+  color: gray;
+  margin: 0;
 }
 
-/* - - - - - options container buttons - - - - - */
+.logo {
+  margin-left: 2em;
+  height: 3em;
+}
+
+/* - - - - - options button styling - - - - - */
 
 .options-container button {
-  display: block;
+  padding: 0;
+  margin: 0;
   background: none;
-  color: gray;
-  transition-property: color;
-  transition-duration: 0.1s;
-  transition-timing-function: ease;
-  font-size: 1em;
+  color: #3d3d3d;
+  transition: color ease 0.1s;
+  font-size: 1rem;
   border: none;
 }
 
-.options-container button:hover, .options-container button:focus {
-  outline: none;
+ .options-container button:focus {
+   outline: none;
+ }
+
+.options-container button:hover {
   cursor: pointer;
   color: #b5b5b5;
 }
@@ -61,13 +77,41 @@ h1 {
   color: #333333;
 }
 
+/* - - - - - header options container setup - - - - - */
 
-/* - - - - - header stylng - - - - - */
+header .options-container {
+  display: flex;
+  flex-direction: column;
+}
 
+header .options-container ul {
+  list-style: none;
+  text-align: right;
+  margin: 0.2rem;
+}
+header .options-container li {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
 
-.logo {
-  margin-left: 2em;
-  height: 3em;
+/* - - - - - footer options container setup - - - - - */
+
+.options-container {
+  display: flex;
+  font-size: 1em;
+  flex-direction: column;
+}
+
+.options-container ul {
+  list-style: none;
+  text-align: center;
+  padding: 0;
+}
+.options-container li {
+  display: inline;
+  margin: 0;
+  padding: 0;
 }
 
 /* - - - - - words container setup - - - - - */
@@ -75,8 +119,10 @@ h1 {
 .words-container {
   font-size: 1.5em;
   color: gray;
-  max-width: 30em;
+  max-width: var(--max-width);
+  padding: 0 2rem;
   margin: 0 auto;
+  margin-top: 20vh;
 }
 
 .words-display {
@@ -94,14 +140,17 @@ h1 {
   font-size: 1.5em;
   text-align: center;
   color: gray;
-  max-width: 30em;
+  max-width: var(--max-width);
+  padding: 0 2rem;
   margin: 3rem auto;
   opacity: 0;
-  transition: opacity ease 0.2s;
+  max-height: 0;
+  transition: opacity 0.2s ease, max-height 0.5s ease;
 }
 
 .score-visible {
   opacity: 1;
+  max-height: 5em;
 }
 
 /* - - - - - caret styling and animation - - - - - */
@@ -164,30 +213,22 @@ h1 {
   border: 2px solid #242424;
   border-radius: 0.5em;
   transition-property: background-color;
-  transition-duration: 0.1s;
+  transition-duration: 0.15s;
   transition-timing-function: ease;
   font-size: 0.9em;
 }
 
-.reset-button:hover, .reset-button:focus {
+.reset-button:focus {
   outline: none;
-  background-color: #242424;
+}
+
+.reset-button:hover {
   cursor: pointer;
+  background-color: #242424;
 }
 
 .reset-button:active {
-  background-color: #191919;
-  border: 2px solid #191919;
-}
-
-/* - - - - - dim setup styling - - - - - */
-
-header, .reset-button {
-  transition-property: opacity;
-  transition-duration: 0.2s;
-  transition-timing-function: ease;
-  font-size: 0.9em;
-
+  background-color: #1A1A1A;
 }
 
 /* - - - - - progress bar styling - - - - - */
@@ -206,45 +247,24 @@ header, .reset-button {
   background-color: var(--progress-colour);
 }
 
-/* - - - - - colour selection menu styling - - - - - */
+/* - - - - - footer styling - - - - - */
 
-.colour-selection-container {
+footer {
+  display: flex;
   position: fixed;
-  top: 0;
+  flex-direction: column;
   width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  transition: background-color ease 0.3s;
-  visibility: hidden;
-  background-color: rgba(0, 0, 0, 0.0);
+  margin: 2rem auto;
+  bottom: 2rem;
+  color: gray;
 }
 
-
-.colour-buttons-container  {
-  padding-top: 10rem;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-content: start;
-  flex-wrap: wrap;
+.footer-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
-.colour-button {
-  display: block;
-  color: white;
-  margin: 1rem;
-  padding: 1em 2em;
-  border-width 2px;
-  border-style: solid;
-  border-radius: 0.5em;
-  transition-property: background-color;
-  transition-duration: 0.1s;
-  transition-timing-function: ease;
-  font-size: 0.9em;
-}
-
-.colour-button:hover, .colour-button:focus {
-  outline: none;
-  cursor: pointer;
+footer p {
+  text-align: center;
 }
