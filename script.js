@@ -9,13 +9,29 @@ const header = document.querySelector('header');
 const personalBest = document.querySelector('.personal-best')
 const caret = document.querySelector('.caret-element');
 
-let totalLetters;
-let progressBars = [];
+// colour theme button references
+const colourButton = document.querySelector('.colour-button');
+const colourMenu = document.querySelector('.colour-selection-container');
+const buttonBanana = document.querySelector('.b-banana');
+const buttonMango = document.querySelector('.b-mango');
+const buttonMilkshake = document.querySelector('.b-milkshake');
+const buttonMochi = document.querySelector('.b-mochi');
+const buttonClassic = document.querySelector('.b-classic');
 
+
+// colour theme variables
+const colourBanana = 50;
+const colourMango = 23;
+const colourMilkshake = 329;
+const colourApple = 360;
+const colourMochi = 162;
 
 // word selection variables
 const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
 const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
+
+let totalLetters;
+let progressBars = [];
 
 let words = 15;
 let wordList = wordSet1;
@@ -129,12 +145,23 @@ function updatePersonalBest(wpm) {
   } else {
     let pb = localStorage.getItem('pb');
     if (pb < wpm) {
-      localStorage.setItem('pb', wpm);
+      localStorage.setItem('pb', wpm.toFixed(0));
       personalBest.innerText = "🎉 New Personal Best";
     } else {
       personalBest.innerText = "Personal best WPM: " + Number(pb).toFixed(0);
     }
   }
+}
+
+// update locally stored theme colour
+// - - - - - - - - - - - -
+function updateTheme(colour) {
+  document.documentElement.style.setProperty('--incorrect-letter-colour', `hsl(${colour}, 63%, 51%)`);
+  document.documentElement.style.setProperty('--extra-letter-colour', `hsl(${colour}, 63%, 30%)`);
+  document.documentElement.style.setProperty('--incorrect-word-colour', `hsl(${colour}, 63%, 51%)`);
+  document.documentElement.style.setProperty('--progress-colour', `hsl(${colour}, 63%, 51%)`);
+  document.documentElement.style.setProperty('--background-colour', `hsl(${colour}, 8%, 11%)`);
+  localStorage.setItem('themeColour', colour);
 }
 
 // calculate and return words per minute function
@@ -182,12 +209,18 @@ function setup() {
   finished = false;
 
   dimInterface(false);
+  colourMenu.style.visibility = 'hidden';
 
   scoreContainer.classList.remove('score-visible');
 
   // clear existing words
   while (wordsDisplay.firstChild) {
     wordsDisplay.firstChild.remove();
+  }
+
+  // use saved theme if available
+  if (localStorage.getItem('themeColour')) {
+    updateTheme(localStorage.getItem('themeColour'));
   }
 
   // build and display words list
@@ -224,6 +257,7 @@ function setup() {
     createProgressBars();
   }
   updateCaret();
+  caret.style.transitionDuration = '0.12s';
 }
 
 
@@ -278,7 +312,6 @@ wordsInput.oninput = function(e) {
     started = true;
     startTime = Date.now();
     // change the progress bar colour when a new test is started
-    progressBars[0].style.backgroundColor = `hsl(${random(0, 360)}, 63%, 51%)`;
   }
   // if the test has finished, return
   if (finished){
@@ -433,6 +466,58 @@ wordsInput.onkeydown = function(e) {
   }
 }
 
+
+// - - - - - - - - - - - - colour theme button functions - - - - - - - - - - - -
+
+colourButton.onclick = function() {
+  colourMenu.style.visibility = 'visible';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+}
+
+colourMenu.onclick = function() {
+  colourMenu.style.visibility = 'hidden';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.0)';
+}
+
+buttonBanana.onclick = function() {
+  wordsInput.focus();
+  updateTheme(colourBanana);
+  colourMenu.style.visibility = 'hidden';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.0)';
+}
+
+buttonMango.onclick = function() {
+  wordsInput.focus();
+  updateTheme(colourMango);
+  colourMenu.style.visibility = 'hidden';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.0)';
+}
+
+buttonMilkshake.onclick = function() {
+  wordsInput.focus();
+  updateTheme(colourMilkshake);
+  colourMenu.style.visibility = 'hidden';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.0)';
+}
+
+buttonMochi.onclick = function() {
+  wordsInput.focus();
+  updateTheme(colourMochi);
+  colourMenu.style.visibility = 'hidden';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.0)';
+}
+
+buttonClassic.onclick = function() {
+  wordsInput.focus();
+  document.documentElement.style.setProperty('--incorrect-letter-colour', `hsl(0, 0%, 30%)`);
+  document.documentElement.style.setProperty('--extra-letter-colour', `hsl(0, 0%, 30%)`);
+  document.documentElement.style.setProperty('--incorrect-word-colour', `hsl(0, 0%, 51%)`);
+  document.documentElement.style.setProperty('--progress-colour', `hsl(0, 0%, 51%)`);
+  document.documentElement.style.setProperty('--background-colour', `hsl(0, 0%, 11%)`);
+  localStorage.removeItem('themeColour');
+  colourMenu.style.visibility = 'hidden';
+  colourMenu.style.backgroundColor = 'rgba(0, 0, 0, 0.0)';
+}
 
 // - - - - - - - - - - - - call setup to initialise program - - - - - - - - - - - -
 

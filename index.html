@@ -7,13 +7,19 @@
     <meta name='Author' content='David'>
     <link rel='icon' href='coffeetype-icon.png' type='image/icon-x'>
     <link rel='stylesheet' href='style.css' type='text/css'>
+    <link rel='stylesheet' href='style-colour-themes.css' type='text/css'>
     <script src='script.js' defer></script>
   </head>
 
   <body>
     <header>
-      <h1>Coffee Type</h1>
-      <img class='logo' src='coffeetype-logo.png' alt='a dripping coffee mug in the shape of a C and a T'>
+      <div class='logo-container'>
+        <h1>Coffee Type</h1>
+        <!-- <img class='logo' src='coffeetype-logo.png' alt='a dripping coffee mug in the shape of a C and a T'> -->
+      </div>
+      <div class='options-container'>
+        <button class='colour-button'>theme</button>
+      </div>
     </header>
 
     <div class='words-container'>
@@ -31,6 +37,16 @@
       <p class='personal-best'></p>
     </div>
     <button class='reset-button'>Reset</button>
+
+    <div class='colour-selection-container'>
+      <div class='colour-buttons-container'>
+        <button class='colour-button b-classic'>Classic</button>
+        <button class='colour-button b-mango'>Mango</button>
+        <button class='colour-button b-milkshake'>Milkshake</button>
+        <button class='colour-button b-banana'>Banana</button>
+        <button class='colour-button b-mochi'>Mochi</button>
+      </div>
+    </div>
 
   </body>
 

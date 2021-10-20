@@ -1,18 +1,66 @@
+/* - - - - - css varialbes setup - - - - - */
+
+:root {
+  --incorrect-letter-colour: hsl(0, 0%, 30%);
+  --extra-letter-colour: hsl(0, 0%, 30%);
+  --incorrect-word-colour: hsl(0, 0%, 51%);
+  --progress-colour: hsl(0, 0%, 51%);
+  --background-colour: hsl(0, 0%, 11%);
+}
+
 /* - - - - - basic setup - - - - - */
 html {
   font-family: 'Courier';
   font-weight: bold;
-  background-color: #1c1c1c;
+  background-color: var(--background-colour);
   color: white;
 }
 
 header {
-  margin: 5rem 0;
+  margin: 5rem auto;
   text-align: center;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: 760px;
+  justify-content: space-between;
 }
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.options-container {
+  display: flex;
+  align-items: center;
+}
+
+h1 {
+  color: var(--incorrect-letter-colour);
+}
+
+/* - - - - - options container buttons - - - - - */
+
+.options-container button {
+  display: block;
+  background: none;
+  color: gray;
+  transition-property: color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease;
+  font-size: 1em;
+  border: none;
+}
+
+.options-container button:hover, .options-container button:focus {
+  outline: none;
+  cursor: pointer;
+  color: #b5b5b5;
+}
+
+.options-container button:active {
+  color: #333333;
+}
+
 
 /* - - - - - header stylng - - - - - */
 
@@ -68,7 +116,6 @@ header {
   animation-direction: alternate;
   position: absolute;
   transition-property: left, top;
-  transition-duration: 0.15s;
   transition-timing-function: ease;
 }
 
@@ -93,15 +140,17 @@ header {
 }
 
 .incorrect {
-  color: coral;
+  color: var(--incorrect-letter-colour);
 }
 
 .extra-letter {
-  color: #8f4f38;
+  color: var(--extra-letter-colour);
 }
 
 .incorrect-word {
-  border-bottom: coral 0.2rem solid;
+  border-bottom-style: solid;
+  border-bottom-width: 0.2rem;
+  border-bottom-color: var(--incorrect-word-colour)
 }
 
 /* - - - - - - reset button styling - - - - - */
@@ -123,6 +172,7 @@ header {
 .reset-button:hover, .reset-button:focus {
   outline: none;
   background-color: #242424;
+  cursor: pointer;
 }
 
 .reset-button:active {
@@ -153,4 +203,48 @@ header, .reset-button {
   width: 0%;
   height: 100%;
   transition: width ease-out 0.35s;
+  background-color: var(--progress-colour);
+}
+
+/* - - - - - colour selection menu styling - - - - - */
+
+.colour-selection-container {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  transition: background-color ease 0.3s;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.0);
+}
+
+
+.colour-buttons-container  {
+  padding-top: 10rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: start;
+  flex-wrap: wrap;
+}
+
+.colour-button {
+  display: block;
+  color: white;
+  margin: 1rem;
+  padding: 1em 2em;
+  border-width 2px;
+  border-style: solid;
+  border-radius: 0.5em;
+  transition-property: background-color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease;
+  font-size: 0.9em;
+}
+
+.colour-button:hover, .colour-button:focus {
+  outline: none;
+  cursor: pointer;
 }
