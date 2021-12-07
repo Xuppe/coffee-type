@@ -166,6 +166,7 @@ header .options-container li {
   position: absolute;
   transition-property: left, top;
   transition-timing-function: ease;
+  transition-duration: 0.1s;
 }
 
 @keyframes blink {
