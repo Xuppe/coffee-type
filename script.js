@@ -6,16 +6,18 @@ const wordsDisplay = document.querySelector('.words-display');
 const resetButton = document.querySelector('.reset-button');
 const scoreContainer = document.querySelector('.score-container');
 const header = document.querySelector('header');
+const footer = document.querySelector('footer')
 const personalBest = document.querySelector('.personal-best')
 const caret = document.querySelector('.caret-element');
+const hint = document.querySelector('.reset-hint');
 
 let totalLetters;
 let progressBars = [];
 
 
 // word selection variables
-const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock";
-const wordSet2 = "welcome fantasy yell fall summer season second minute angle mind happy go ready please send message";
+const wordSet1 = "hello how yes are you good what about very great nice to see because limited time against clock welcome sun";
+const wordSet2 = "welcome fantasy send yell fall summer season second message minute angle mind happy go ready please";
 
 let words = 15;
 let wordList = wordSet1;
@@ -50,11 +52,15 @@ function random(min, max) {
 function dimInterface(toggle) {
   if (toggle === true) {
     header.style.opacity = '0.1';
+    footer.style.opacity = '0.1';
     resetButton.style.opacity = '0.1';
+    hint.style.opacity = '0.1';
     document.documentElement.style.cursor = 'none';
   } else if (toggle === false) {
     header.style.opacity = '1.0';
+    footer.style.opacity = '1.0';
     resetButton.style.opacity = '1.0';
+    hint.style.opacity = '1.0';
     document.documentElement.style.cursor = 'auto';
   }
 }
@@ -278,7 +284,7 @@ wordsInput.oninput = function(e) {
     started = true;
     startTime = Date.now();
     // change the progress bar colour when a new test is started
-    // progressBars[0].style.backgroundColor = `hsl(${random(0, 360)}, 63%, 51%)`;
+    progressBars[0].style.backgroundColor = `hsl(${random(0, 360)}, 51%, 67%)`;
   }
   // if the test has finished, return
   if (finished){
